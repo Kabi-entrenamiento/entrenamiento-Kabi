@@ -1,5 +1,4 @@
-<!DOCTYPE html> 
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,427 +8,103 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* ==========================================================================
-           1. CONFIGURACIÓN BASE Y VARIABLES DE COLOR KABI
-           ========================================================================== */
         :root {
             --kabi-blue: #172a43;
             --kabi-teal: #58b4bf;
             --kabi-yellow: #d9cd43;
             --kabi-orange: #ec8963;
             --kabi-pink: #bf247a;
+            --kabi-light-teal: #8acbd2;
+            --kabi-purple: #812b8c;
             --kabi-light: #f8f9fa;
             --kabi-text: #334155;
             --kabi-gray-border: #cbd5e1;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Open Sans', sans-serif; background-color: #cbd5e1; color: var(--kabi-text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
-        body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: #e2e8f0;
-            color: var(--kabi-text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+        .spa-container { width: 1280px; height: 720px; background-color: var(--kabi-light); border-radius: 16px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); display: flex; overflow: hidden; position: relative; }
+        
+        /* Menú Lateral */
+        .spa-sidebar { width: 280px; background-color: var(--kabi-blue); padding: 40px 20px; display: flex; flex-direction: column; justify-content: space-between; z-index: 10; }
+        .logo-section { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-decoration: none; }
+        
+        /* Logo SVG Estilo Kabi Negativo */
+        .logo-svg-container { width: 70px; height: auto; }
+        .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 22px; color: white; letter-spacing: 0.5px; }
+        .logo-subtext { font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--kabi-teal); font-weight: 600; margin-top: -5px; }
+        
+        .nav-steps { list-style: none; margin-top: 30px; flex-grow: 1; }
+        .nav-item { display: flex; align-items: center; gap: 12px; color: rgba(255, 255, 255, 0.4); padding: 10px 12px; border-radius: 8px; margin-bottom: 4px; font-size: 13px; font-weight: 600; pointer-events: none; transition: all 0.3s; }
+        .nav-item.active { background-color: rgba(255, 255, 255, 0.1); color: var(--kabi-teal); opacity: 1; }
+        .nav-item.completed { color: #22c55e; }
 
-        /* ==========================================================================
-           2. CONTENEDOR PRINCIPAL INTERACTIVO (SPA MOCKUP)
-           ========================================================================== */
-        .spa-container {
-            width: 1280px;
-            height: 720px;
-            background-color: var(--kabi-light);
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            display: flex;
-            overflow: hidden;
-            position: relative;
-        }
+        /* Contenido de Pantallas */
+        .spa-content-viewport { flex-grow: 1; position: relative; background-color: var(--kabi-light); display: flex; flex-direction: column; }
+        .spa-header { height: 70px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.05); background: white; }
+        .experience-badge { background-color: rgba(88, 180, 191, 0.1); color: var(--kabi-blue); padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .slide-viewport-area { flex-grow: 1; position: relative; overflow: hidden; }
+        .slide-view { width: 100%; height: 100%; padding: 40px 60px; display: none; flex-direction: column; justify-content: center; position: absolute; top: 0; left: 0; }
+        .slide-view.active { display: flex; }
 
-        /* Menú lateral simulado de la Aplicación */
-        .spa-sidebar {
-            width: 260px;
-            background-color: var(--kabi-blue);
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            z-index: 10;
-        }
+        /* Tipografía */
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--kabi-blue); }
+        h2 { font-size: 32px; margin-bottom: 10px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .subtitle { font-size: 16px; color: #64748b; margin-bottom: 25px; }
+        
+        /* Opciones de selección */
+        .grid-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px; }
+        .option-card { background: white; padding: 18px 22px; border-radius: 12px; border: 2px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 15px; color: var(--kabi-text); }
+        .option-card:hover { border-color: var(--kabi-light-teal); background-color: rgba(138, 203, 210, 0.05); }
+        .option-card.selected { border-color: var(--kabi-teal); background-color: rgba(88, 180, 191, 0.1); color: var(--kabi-blue); }
+        .option-card i.radio-icon { color: #cbd5e1; font-size: 18px; }
+        .option-card.selected i.radio-icon { color: var(--kabi-teal); }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
+        /* Inputs de escritura */
+        .kabi-textarea-wrapper { margin-top: 20px; }
+        .kabi-textarea-wrapper label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--kabi-blue); font-size: 15px; }
+        .kabi-textbox { width: 100%; height: 100px; background-color: white; border: 2px dashed var(--kabi-gray-border); border-radius: 12px; padding: 15px; font-family: inherit; font-size: 15px; color: var(--kabi-text); resize: none; outline: none; transition: all 0.2s; }
+        .kabi-textbox:focus { border-color: var(--kabi-teal); border-style: solid; background-color: white; }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--kabi-teal);
-            color: white;
-            display: grid;
-            place-items: center;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 22px;
-            border-radius: 8px;
-        }
+        /* Cuadros de Insight */
+        .kabi-insight-box { margin-top: 20px; background: padding-box rgba(217, 205, 67, 0.1); border-left: 4px solid var(--kabi-yellow); padding: 15px 20px; border-radius: 0 12px 12px 0; display: flex; gap: 15px; align-items: center; }
+        .kabi-insight-box.pink { border-left-color: var(--kabi-pink); background: rgba(191, 36, 122, 0.05); }
+        .kabi-insight-box i { font-size: 24px; color: var(--kabi-yellow); }
+        .kabi-insight-box.pink i { color: var(--kabi-pink); }
+        .kabi-insight-box p { font-size: 14px; font-style: italic; font-weight: 600; color: var(--kabi-blue); line-height: 1.4; }
 
-        .logo-text {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 20px;
-            color: white;
-            letter-spacing: 0.5px;
-        }
+        /* Controles Inferiores */
+        .spa-footer-controls { height: 70px; padding: 0 40px; border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; background: white; }
+        .btn-nav-control { padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; border: 1px solid var(--kabi-gray-border); background: white; color: var(--kabi-blue); display: flex; align-items: center; gap: 8px; user-select: none; transition: all 0.2s; }
+        .btn-nav-control:hover:not(:disabled) { background-color: #f1f5f9; border-color: #94a3b8; }
+        .btn-nav-control:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-nav-control.primary { background-color: var(--kabi-blue); color: white; border: none; }
+        .btn-nav-control.primary:hover:not(:disabled) { background-color: #233b5c; }
 
-        .nav-steps {
-            list-style: none;
-            margin-top: 40px;
-            flex-grow: 1;
-        }
+        /* Barra de Progreso de bolitas */
+        .dots-indicator { display: flex; gap: 6px; }
+        .progress-dot { width: 8px; height: 8px; background: var(--kabi-gray-border); border-radius: 50%; transition: all 0.3s; }
+        .progress-dot.active { background: var(--kabi-teal); width: 20px; border-radius: 4px; }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+        /* Layouts Especiales */
+        .welcome-center { text-align: center; max-width: 650px; margin: 0 auto; align-items: center; }
+        .welcome-center h1 { font-size: 42px; margin-bottom: 15px; line-height: 1.2; }
+        .welcome-center p { font-size: 18px; color: #64748b; margin-bottom: 30px; }
+        .btn-start { background-color: var(--kabi-teal); color: white; padding: 15px 40px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 16px; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(88, 180, 191, 0.4); }
+        .btn-start:hover { background-color: #4ca3ad; }
 
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--kabi-teal);
-        }
+        /* Botón de Descarga */
+        .download-card { background: white; border: 2px solid var(--kabi-teal); padding: 35px; border-radius: 16px; text-align: center; max-width: 600px; margin: 0 auto; box-shadow: 0 10px 25px rgba(88,180,191,0.05); }
+        .btn-download { background-color: var(--kabi-pink); color: white; padding: 16px 35px; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 16px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; box-shadow: 0 4px 14px rgba(191,36,122,0.4); }
+        .btn-download:hover { background-color: #a31e67; }
 
-        .nav-item:hover:not(.active) {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-footer {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 12px;
-            text-align: center;
-        }
-
-        /* Área de contenido de la Diapositiva/Pantalla */
-        .spa-content-viewport {
-            flex-grow: 1;
-            position: relative;
-            background-color: var(--kabi-light);
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Cabecera interna superior */
-        .spa-header {
-            height: 80px;
-            padding: 0 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            background: white;
-        }
-
-        .experience-badge {
-            background-color: rgba(88, 180, 191, 0.1);
-            color: var(--kabi-blue);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Vista de Contenido Principal */
-        .slide-view {
-            flex-grow: 1;
-            padding: 40px 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow-y: auto;
-        }
-
-        /* ==========================================================================
-           3. ESTILOS DE ELEMENTOS Y COMPONENTES VISUALES
-           ========================================================================== */
-        h1, h2, h3 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--kabi-blue);
-        }
-
-        h2 {
-            font-size: 36px;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .subtitle {
-            font-size: 18px;
-            color: #64748b;
-            margin-bottom: 35px;
-        }
-
-        p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--kabi-text);
-        }
-
-        /* Rejilla de Tarjetas / Grid de Opciones */
-        .grid-tiles {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .tile-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .tile-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border-color: var(--kabi-teal);
-        }
-
-        .tile-card .tile-icon {
-            font-size: 28px;
-            color: var(--kabi-teal);
-            background: rgba(88, 180, 191, 0.1);
-            width: 55px;
-            height: 55px;
-            display: grid;
-            place-items: center;
-            border-radius: 10px;
-            flex-shrink: 0;
-        }
-
-        .tile-card h3 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .tile-card p {
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        /* Inputs interactivos simulados */
-        .kabi-textarea-wrapper {
-            margin-top: 25px;
-        }
-
-        .kabi-textarea-wrapper label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--kabi-blue);
-        }
-
-        .kabi-textbox {
-            width: 100%;
-            height: 120px;
-            background-color: white;
-            border: 2px dashed var(--kabi-gray-border);
-            border-radius: 12px;
-            padding: 15px;
-            font-family: inherit;
-            font-size: 15px;
-            color: var(--kabi-text);
-            resize: none;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .kabi-textbox:focus {
-            border-color: var(--kabi-teal);
-            border-style: solid;
-        }
-
-        /* Botones y Selectores de píldora */
-        .chips-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .kabi-chip {
-            padding: 12px 24px;
-            background: white;
-            border: 2px solid var(--kabi-gray-border);
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--kabi-blue);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
-        }
-
-        .kabi-chip:hover {
-            border-color: var(--kabi-teal);
-            background-color: rgba(88, 180, 191, 0.05);
-        }
-
-        /* Layout de dos columnas con Imagen */
-        .layout-split {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .split-image-container {
-            border-radius: 16px;
-            overflow: hidden;
-            height: 380px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            border: 6px solid white;
-        }
-
-        .split-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .kabi-list {
-            list-style: none;
-            margin-top: 20px;
-        }
-
-        .kabi-list li {
-            font-size: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .kabi-list li i {
-            color: var(--kabi-teal);
-            font-size: 18px;
-        }
-
-        /* Sección de descarga final */
-        .download-box {
-            background: white;
-            border: 1px solid rgba(0,0,0,0.05);
-            padding: 40px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            max-width: 650px;
-            margin: 0 auto;
-        }
-
-        .btn-download {
-            margin-top: 25px;
-            background-color: var(--kabi-teal);
-            color: white;
-            padding: 16px 40px;
-            border-radius: 50px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 18px;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 14px rgba(88, 180, 191, 0.4);
-            transition: all 0.2s ease;
-        }
-
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 180, 191, 0.6);
-            background-color: #4ca3ad;
-        }
-
-        /* Blobs decorativos abstractos de fondo */
-        .bg-blob {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(88,180,191,0.08) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Barra de navegación inferior interna (Controles SPA) */
-        .spa-footer-controls {
-            height: 70px;
-            padding: 0 40px;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-        }
-
-        .btn-nav-control {
-            padding: 10px 22px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            border: 1px solid var(--kabi-gray-border);
-            background: white;
-            color: var(--kabi-blue);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-nav-control.primary {
-            background-color: var(--kabi-blue);
-            color: white;
-            border: none;
-        }
-
-        .btn-nav-control:hover {
-            opacity: 0.9;
-        }
-
+        /* Escondido para la generación de PDF externo */
+        #pdf-template { display: none; }
     </style>
 </head>
 <body>
@@ -438,90 +113,430 @@
         
         <aside class="spa-sidebar">
             <div>
-                <a href="#" class="logo-section">
-                    <div class="logo-icon">K</div>
-                    <span class="logo-text">KABI</span>
-                </a>
+                <div class="logo-section">
+                    <svg class="logo-svg-container" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 5H32V60L85 5H112L55 65L115 135H88L40 78V135H10V5Z" fill="#58b4bf" stroke="#172a43" stroke-width="6" stroke-linejoin="round"/>
+                        <path d="M32 5V135" stroke="#172a43" stroke-width="6"/>
+                    </svg>
+                    <div>
+                        <span class="logo-text">KABI</span>
+                        <div class="logo-subtext">Educación</div>
+                    </div>
+                </div>
                 
-                <ul class="nav-steps">
-                    <li class="nav-item"><i class="fa-solid fa-play"></i> Inicio</li>
-                    <li class="nav-item active"><i class="fa-solid fa-heart-crack"></i> 1. El Peso Actual</li>
-                    <li class="nav-item"><i class="fa-solid fa-bullseye"></i> 2. Tu Objetivo</li>
-                    <li class="nav-item"><i class="fa-solid fa-face-smile"></i> 3. Tus Emociones</li>
-                    <li class="nav-item"><i class="fa-solid fa-file-pdf"></i> 4. Tu Guía Final</li>
+                <ul class="nav-steps" id="sidebar-nav">
+                    <li class="nav-item active"><i class="fa-solid fa-play"></i> Inicio</li>
+                    <li class="nav-item"><i class="fa-solid fa-scale-unbalanced"></i> 1. El Peso Actual</li>
+                    <li class="nav-item"><i class="fa-solid fa-face-smile"></i> 2. Tu Emoción</li>
+                    <li class="nav-item"><i class="fa-solid fa-compass"></i> 3. El Contexto</li>
+                    <li class="nav-item"><i class="fa-solid fa-bullseye"></i> 4. Lo que Quieres</li>
+                    <li class="nav-item"><i class="fa-solid fa-bolt"></i> 5. Simulación</li>
+                    <li class="nav-item"><i class="fa-solid fa-brain"></i> 6. Preparación</li>
+                    <li class="nav-item"><i class="fa-solid fa-file-pdf"></i> Finalización</li>
                 </ul>
             </div>
-            
-            <div class="sidebar-footer">
-                <p>KABI Educación © 2026</p>
-            </div>
+            <div class="sidebar-footer">KABI Educación © 2026</div>
         </aside>
 
         <main class="spa-content-viewport">
             
             <header class="spa-header">
-                <span class="experience-badge">Entrenamiento Humano</span>
-                <p style="font-size: 14px; color: #64748b; font-weight: 600;">Antes de esa conversación difícil</p>
+                <span class="experience-badge" id="badge-panel-text">BIENVENIDA</span>
+                <p style="font-size: 13px; color: #64748b; font-weight: 600;"><i class="fa-solid fa-user-graduate"></i> Experiencia Práctica de Autoliderazgo</p>
             </header>
 
-            <div class="slide-view">
-                <div class="bg-blob" style="top: -100px; right: -100px;"></div>
-                
-                <h2>¿Qué es lo que más pesa hoy?</h2>
-                <p class="subtitle">Identificar la barrera principal es el primer paso para comunicarte de manera consciente.</p>
+            <div class="slide-viewport-area">
 
-                <div class="grid-tiles">
-                    <div class="tile-card">
-                        <div class="tile-icon"><i class="fa-solid fa-heart-crack"></i></div>
-                        <div>
-                            <h3>El miedo a herir</h3>
-                            <p>Preocupación legítima por el impacto emocional en la otra persona.</p>
-                        </div>
+                <div class="slide-view active welcome-center" data-badge="BIENVENIDA">
+                    <h1>Antes de esa<br><span style="color: var(--kabi-teal);">conversación difícil</span></h1>
+                    <p>Una experiencia guiada de entrenamiento humano diseñada para ayudarte a encarar conversaciones complejas con claridad, empatía y firmeza.</p>
+                    <button class="btn-start" onclick="navigate(1)">Comenzar Entrenamiento <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="slide-view" data-badge="ANTES DE EMPEZAR">
+                    <h2>¿Qué pesa más ahora mismo?</h2>
+                    <p class="subtitle">Esa conversación que estás evitando... selecciona la opción que mejor represente lo que sientes en este momento.</p>
+                    <div class="grid-options" data-field="peso_actual">
+                        <div class="option-card" data-val="Miedo a herir a la otra persona"><i class="fa-regular fa-circle radio-icon"></i> Miedo a herir a la otra persona</div>
+                        <div class="option-card" data-val="Miedo al conflicto"><i class="fa-regular fa-circle radio-icon"></i> Miedo al conflicto</div>
+                        <div class="option-card" data-val="No saber cómo decirlo"><i class="fa-regular fa-circle radio-icon"></i> No saber cómo decirlo</div>
+                        <div class="option-card" data-val="Que no me entiendan"><i class="fa-regular fa-circle radio-icon"></i> Que no me entiendan</div>
+                        <div class="option-card" data-val="Que todo empeore"><i class="fa-regular fa-circle radio-icon"></i> Que todo empeore</div>
+                        <div class="option-card" data-val="Sentir que voy a perder el control"><i class="fa-regular fa-circle radio-icon"></i> Sentir que voy a perder el control</div>
                     </div>
-                    <div class="tile-card">
-                        <div class="tile-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                        <div>
-                            <h3>Miedo al conflicto</h3>
-                            <p>Evitar la incomodidad de la tensión o la discusión directa.</p>
-                        </div>
-                    </div>
-                    <div class="tile-card">
-                        <div class="tile-icon"><i class="fa-solid fa-cloud"></i></div>
-                        <div>
-                            <h3>Falta de claridad</h3>
-                            <p>No saber con exactitud por dónde empezar o qué palabras usar.</p>
-                        </div>
-                    </div>
-                    <div class="tile-card">
-                        <div class="tile-icon"><i class="fa-solid fa-user-xmark"></i></div>
-                        <div>
-                            <h3>Ser malinterpretado</h3>
-                            <p>Temor a que tus intenciones reales no se entiendan correctamente.</p>
-                        </div>
+                    <div class="kabi-insight-box">
+                        <i class="fa-solid fa-seedling" style="color: var(--kabi-teal);"></i>
+                        <p><strong>Lo primero:</strong> No estás aquí para "ganar" la conversación. Estás aquí para entender mejor lo que sientes, aclarar lo que necesitas y prepararte para hablar con más consciencia. Las conversaciones difíciles no desaparecen por evitarlas. Solo crecen en silencio.</p>
                     </div>
                 </div>
 
-                <div class="kabi-textarea-wrapper">
-                    <label>Ponlo en tus propias palabras:</label>
-                    <textarea class="kabi-textbox" placeholder="Haz clic aquí y escribe qué es lo que hace que esta conversación sea difícil para ti hoy..."></textarea>
+                <div class="slide-view" data-badge="PANEL 1 - LO QUE PASA DENTRO">
+                    <h2>¿Qué emoción está más presente hoy?</h2>
+                    <p class="subtitle">Ponle nombre a lo que experimentas internamente para restarle control sobre tus impulsos.</p>
+                    <div class="grid-options" data-field="emocion_presente" style="grid-template-columns: repeat(3, 1fr);">
+                        <div class="option-card" data-val="Rabia">😤 Rabia</div>
+                        <div class="option-card" data-val="Ansiedad">😰 Ansiedad</div>
+                        <div class="option-card" data-val="Tristeza">😞 Tristeza</div>
+                        <div class="option-card" data-val="Decepción">😔 Decepción</div>
+                        <div class="option-card" data-val="Frustración">😶 Frustración</div>
+                        <div class="option-card" data-val="Confusión">😵 Confusión</div>
+                    </div>
+                    <div class="kabi-textarea-wrapper">
+                        <label><i class="fa-solid fa-pen-fancy"></i> Completa la frase con honestidad:</label>
+                        <textarea class="kabi-textbox" id="input-porque" placeholder="“Creo que esta emoción aparece porque...”"></textarea>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 1 - TU PATRÓN">
+                    <h2>Cuando una conversación se pone difícil, tú normalmente...</h2>
+                    <p class="subtitle">Identificar tus reacciones automatizadas te ayuda a frenarlas a tiempo.</p>
+                    <div class="grid-options" data-field="patron_comportamiento">
+                        <div class="option-card" data-val="Hablas más fuerte"><i class="fa-regular fa-circle radio-icon"></i> Hablas más fuerte</div>
+                        <div class="option-card" data-val="Te quedas callado/a"><i class="fa-regular fa-circle radio-icon"></i> Te quedas callado/a</div>
+                        <div class="option-card" data-val="Intentas controlar todo"><i class="fa-regular fa-circle radio-icon"></i> Intentas controlar todo</div>
+                        <div class="option-card" data-val="Evitas decir lo importante"><i class="fa-regular fa-circle radio-icon"></i> Evitas decir lo importante</div>
+                        <div class="option-card" data-val="Cambias de tema"><i class="fa-regular fa-circle radio-icon"></i> Cambias de tema</div>
+                        <div class="option-card" data-val="Te pones a la defensiva"><i class="fa-regular fa-circle radio-icon"></i> Te ponés a la defensiva</div>
+                    </div>
+                    <div class="kabi-insight-box pink">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <p><strong>Micro insight KABI:</strong> Reconocer tu patrón no te define. Te da opciones para actuar diferente.</p>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 2 - EL CONTEXTO">
+                    <h2>¿Qué hizo que esta conversación se volviera necesaria?</h2>
+                    <p class="subtitle">En lugar de repasar toda la historia mentalmente, elige el detonante raíz:</p>
+                    <div class="grid-options" data-field="detonante_contexto">
+                        <div class="option-card" data-val="Algo se viene acumulando hace tiempo">Algo se viene acumulando hace tiempo</div>
+                        <div class="option-card" data-val="Hubo una situación puntual">Hubo una situación puntual</div>
+                        <div class="option-card" data-val="Me sentí irrespetado/a">Me sentí irrespetado/a</div>
+                        <div class="option-card" data-val="Hay expectativas no habladas">Hay expectativas no habladas</div>
+                        <div class="option-card" data-val="Siento distancia o desconexión">Siento distancia o desconexión</div>
+                        <div class="option-card" data-val="Necesito poner un límite">Necesito poner un límite</div>
+                    </div>
+                    <div class="kabi-textarea-wrapper">
+                        <label><i class="fa-solid fa-quote-left"></i> Ahora descríbelo en una frase simple (Sin justificarte, sin atacar, solo hechos):</label>
+                        <textarea class="kabi-textbox" id="input-hechos" placeholder="Ejemplo: 'No se cumplió la entrega pactada el martes', en lugar de 'Siempre te da igual mi tiempo'."></textarea>
+                    </div>
+                    <div class="kabi-insight-box">
+                        <i class="fa-solid fa-handshake-angle" style="color: var(--kabi-teal);"></i>
+                        <p><strong>KABI te acompaña:</strong> Separar hechos de interpretaciones ayuda a bajar la intensidad emocional y aumenta de forma inmediata la claridad.</p>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 3 - TU DESEO">
+                    <h2>Si esta conversación saliera bien... ¿Qué te gustaría que ocurriera?</h2>
+                    <p class="subtitle">Define tu norte con exactitud para no perder el rumbo durante la charla.</p>
+                    <div class="grid-options" data-field="meta_conversacion">
+                        <div class="option-card" data-val="Sentirme escuchado/a">Sentirme escuchado/a</div>
+                        <div class="option-card" data-val="Aclarar un malentendido">Aclarar un malentendido</div>
+                        <div class="option-card" data-val="Recuperar confianza">Recuperar confianza</div>
+                        <div class="option-card" data-val="Poner límites">Poner límites</div>
+                        <div class="option-card" data-val="Encontrar acuerdos">Encontrar acuerdos</div>
+                        <div class="option-card" data-val="Poder expresar lo que siento">Poder expresar lo que siento</div>
+                    </div>
+                    <div class="kabi-textarea-wrapper">
+                        <label>Completa la frase:</label>
+                        <textarea class="kabi-textbox" id="input-valioso" placeholder="“Para mí sería valioso que después de esta conversación...”"></textarea>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 3 - REFLEXIÓN">
+                    <h2>Una pregunta incómoda de autoconsciencia...</h2>
+                    <p class="subtitle">Sé brutalmente honesto contigo mismo en este espacio seguro.</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <h3 style="font-size: 24px; color: var(--kabi-pink); margin-bottom: 25px;">¿Quieres resolver el problema o demostrar que tienes razón?</h3>
+                        <div class="grid-options" data-field="resolver_vs_razon" style="max-width: 600px; margin: 0 auto;">
+                            <div class="option-card" data-val="Resolver"><i class="fa-regular fa-circle radio-icon"></i> Resolver el problema</div>
+                            <div class="option-card" data-val="Tener razón"><i class="fa-regular fa-circle radio-icon"></i> Demostrar que tengo razón</div>
+                            <div class="option-card" data-val="Un poco de ambas"><i class="fa-regular fa-circle radio-icon"></i> Un poco de ambas opciones</div>
+                        </div>
+                    </div>
+                    <div class="kabi-insight-box pink">
+                        <i class="fa-solid fa-comments"></i>
+                        <p><strong>Micro insight KABI:</strong> Muchas conversaciones se rompen no por falta de argumentos contundentes... sino por falta de una escucha sincera.</p>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 4 - MINI SIMULACIÓN">
+                    <h2>Imagina que la otra persona te responde de golpe:</h2>
+                    <p class="subtitle" style="color: var(--kabi-pink); font-weight: 700; font-size: 20px; background: #fff3f8; padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(191,36,122,0.1); display: inline-block;">“Ese no es mi problema.”</p>
+                    <p style="margin: 15px 0 10px 0; font-weight: 600;">¿Qué harías tú normalmente ante esta barrera?</p>
+                    <div class="grid-options" data-field="reaccion_simulacion">
+                        <div class="option-card" data-val="Defenderme">🛡️ Defenderme</div>
+                        <div class="option-card" data-val="Callarme">😶 Callarme</div>
+                        <div class="option-card" data-val="Atacar">🔥 Atacar</div>
+                        <div class="option-card" data-val="Preguntar más">❓ Preguntar más</div>
+                        <div class="option-card" data-val="Cambiar de tema">🔀 Cambiar de tema</div>
+                    </div>
+                    <div class="kabi-insight-box" style="border-left-color: var(--kabi-purple); background-color: rgba(129,43,140,0.04);">
+                        <i class="fa-solid fa-chart-bar" style="color: var(--kabi-purple);"></i>
+                        <p><strong>Posible impacto táctico:</strong> Si atacas, el otro se cerrará por completo. Si te callas, evitas el conflicto inmediato pero dejas el problema intacto. Si optas por <strong>preguntar más</strong>, las probabilidades de comprensión aumentan exponencialmente.</p>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 5 - PREPARARTE">
+                    <h2>¿Qué NO quieres dejar de decir bajo ninguna circunstancia?</h2>
+                    <p class="subtitle">No intentes estructurar o memorizar un discurso largo. Mantén tu enfoque simplificado.</p>
+                    <div class="kabi-textarea-wrapper" style="margin-top: 5px;">
+                        <label>Reduce tu mensaje clave a solo 3 ideas esenciales y directas:</label>
+                        <textarea class="kabi-textbox" id="input-ideas-clave" style="height: 140px;" placeholder="1. lo que ocurrió del hecho... &#10;2. el impacto o cómo te hace sentir... &#10;3. la petición concreta que necesitas hacer..."></textarea>
+                    </div>
+                    <div class="kabi-insight-box" style="border-left-color: var(--kabi-light-teal); background-color: rgba(138,203,210,0.08);">
+                        <i class="fa-solid fa-circle-stop" style="color: var(--kabi-light-teal);"></i>
+                        <p><strong>🎧 PAUSA KABI:</strong> Antes de continuar, baja un poco el ritmo. Respira profundo. Relaja los hombros por completo. No necesitas hacerlo perfecto, solo necesitas llegar con un nivel más alto de consciencia.</p>
+                    </div>
+                </div>
+
+                <div class="slide-view" data-badge="PANEL 6 - TU INTENCIÓN">
+                    <h2>Antes de cruzar la puerta hacia esa conversación...</h2>
+                    <p class="subtitle">¿Cómo quieres genuinamente que la otra persona se sienta después de haber hablado contigo?</p>
+                    <div class="grid-options" data-field="intencion_final">
+                        <div class="option-card" data-val="Escuchada">🤝 Escuchada</div>
+                        <div class="option-card" data-val="Respetada">💎 Respetada</div>
+                        <div class="option-card" data-val="Comprendida">💡 Comprendida</div>
+                        <div class="option-card" data-val="Retada con honestidad">🎯 Retada con honestidad</div>
+                        <div class="option-card" data-val="Más tranquila">🍃 Más tranquila</div>
+                        <div class="option-card" data-val="Más clara">✨ Más clara</div>
+                    </div>
+                    <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                        <p style="font-weight: 700; color: var(--kabi-blue); font-size: 15px;"><i class="fa-solid fa-square-check" style="color:#22c55e;"></i> ESTADO DE TU PROGRESO:</p>
+                        <p style="font-size: 14px; margin-top: 5px; color: #475569;">✔ Emociones reconocidas | ✔ Patrones bajo presión identificados | ✔ Metas y deseos aclarados | ✔ Intención fijada con claridad.</p>
+                    </div>
+                </div>
+
+                <div class="slide-view text-center" data-badge="ENTRENAMIENTO COMPLETADO">
+                    <div class="download-card">
+                        <h2 style="justify-content: center; color: var(--kabi-blue);"><i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> ¡Entrenamiento Concluido!</h2>
+                        <p style="margin: 15px 0; font-size: 16px; line-height: 1.5;">"Lo importante no es ganar la conversación. Es salir de ella diciendo lo que necesitabas decir... sin dejar de ver a la otra persona como un ser humano."</p>
+                        
+                        <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: var(--kabi-blue); font-weight: 600;">
+                            🔒 Tus respuestas han sido procesadas localmente en esta SPA y están listas para tu uso privado.
+                        </div>
+
+                        <button class="btn-download" onclick="generateKabiPDF()">
+                            <i class="fa-solid fa-file-pdf"></i> DESCARGAR MI GUÍA PERSONAL
+                        </button>
+                        <p style="font-size: 12px; color: #94a3b8; margin-top: 10px;">Genera un documento PDF con tus respuestas y aprendizajes clave.</p>
+                    </div>
                 </div>
 
             </div>
 
-            <footer class="spa-footer-controls">
-                <button class="btn-nav-control"><i class="fa-solid fa-arrow-left"></i> Anterior</button>
-                <div style="display: flex; gap: 6px;">
-                    <span style="width: 8px; height: 8px; background: var(--kabi-blue); border-radius: 50%;"></span>
-                    <span style="width: 20px; height: 8px; background: var(--kabi-teal); border-radius: 4px;"></span>
-                    <span style="width: 8px; height: 8px; background: var(--kabi-gray-border); border-radius: 50%;"></span>
-                    <span style="width: 8px; height: 8px; background: var(--kabi-gray-border); border-radius: 50%;"></span>
-                </div>
-                <button class="btn-nav-control primary">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+            <footer class="spa-footer-controls" id="spa-footer">
+                <button class="btn-nav-control" id="btn-prev" onclick="navigate(-1)"><i class="fa-solid fa-arrow-left"></i> Anterior</button>
+                <div class="dots-indicator" id="dots-container"></div>
+                <button class="btn-nav-control primary" id="btn-next" onclick="navigate(1)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
             </footer>
 
         </main>
 
     </div>
 
+    <div id="pdf-template">
+        <div style="padding: 40px; font-family: 'Open Sans', sans-serif; color: #172a43;">
+            <div style="border-bottom: 3px solid #58b4bf; padding-bottom: 15px; margin-bottom: 30px;">
+                <h1 style="font-family: 'Montserrat', sans-serif; font-size: 28px; color: #172a43;">KABI Educación</h1>
+                <p style="font-size: 14px; color: #58b4bf; font-weight: 700; text-transform: uppercase;">Mi Guía Personal Pre-Conversación</p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">1. Mi mayor freno u obstáculo actual:</h3>
+                <p id="pdf-peso" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1;">No especificado</p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">2. Estado emocional identificado:</h3>
+                <p id="pdf-emocion" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1; font-weight: bold;">No especificado</p>
+                <p style="font-size: 13px; margin-top: 5px; font-style: italic; color: #475569;">Origen percibido:</p>
+                <p id="pdf-porque" style="background: #ffffff; padding: 10px; border: 1px dashed #cbd5e1; font-size: 14px; min-height: 40px;"></p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">3. Mi patrón reactivo automatizado:</h3>
+                <p id="pdf-patron" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1;">No especificado</p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">4. Diagnóstico del contexto objetivo:</h3>
+                <p id="pdf-detonante" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1;">No especificado</p>
+                <p style="font-size: 13px; margin-top: 5px; font-style: italic; color: #475569;">Los hechos desprovistos de juicios:</p>
+                <p id="pdf-hechos" style="background: #ffffff; padding: 10px; border: 1px dashed #cbd5e1; font-size: 14px; min-height: 40px;"></p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">5. Mi meta ideal y aspiración:</h3>
+                <p id="pdf-meta" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1;">No especificado</p>
+                <p style="font-size: 13px; margin-top: 5px; font-style: italic; color: #475569;">Declaración de valor:</p>
+                <p id="pdf-valioso" style="background: #ffffff; padding: 10px; border: 1px dashed #cbd5e1; font-size: 14px; min-height: 40px;"></p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">6. Enfoque interno del diálogo:</h3>
+                <p id="pdf-enfoque" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1;">No especificado</p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">7. Mis 3 ideas pilares innegociables:</h3>
+                <p id="pdf-ideas" style="background: #ffffff; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; white-space: pre-line; line-height: 1.5;"></p>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: #bf247a; font-family: 'Montserrat', sans-serif; font-size: 16px; margin-bottom: 5px;">8. Mi intención relacional de cierre:</h3>
+                <p id="pdf-intencion" style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 14px; border-left: 3px solid #cbd5e1;">No especificado</p>
+            </div>
+
+            <div style="margin-top: 5px; border-top: 1px solid #cbd5e1; padding-top: 15px; text-align: center; font-size: 12px; color: #64748b;">
+                "Las habilidades humanas también se entrenan." — kabieducacion.com
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Memoria interna de datos del usuario
+        let userData = {
+            peso_actual: '',
+            emocion_presente: '',
+            patron_comportamiento: '',
+            detonante_contexto: '',
+            meta_conversacion: '',
+            resolver_vs_razon: '',
+            reaccion_simulacion: '',
+            intencion_final: ''
+        };
+
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide-view');
+        const totalSlides = slides.length;
+        const sidebarItems = document.querySelectorAll('#sidebar-nav .nav-item');
+        const badgePanelText = document.getElementById('badge-panel-text');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const spaFooter = document.getElementById('spa-footer');
+
+        // Mapeo de pantallas hacia los pasos de la barra lateral izquierda
+        const slideToSidebarMap = [0, 1, 2, 3, 4, 4, 5, 6, 6, 7];
+
+        // Inicializar barra de bolitas
+        const dotsContainer = document.getElementById('dots-container');
+        for (let i = 0; i < totalSlides; i++) {
+            let dot = document.createElement('div');
+            dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+            dotsContainer.appendChild(dot);
+        }
+        const dots = document.querySelectorAll('.progress-dot');
+
+        // Configurar controladores de eventos para selecciones de tarjetas
+        document.querySelectorAll('.grid-options').forEach(grid => {
+            const field = grid.getAttribute('data-field');
+            grid.querySelectorAll('.option-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    grid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    userData[field] = card.getAttribute('data-val');
+                });
+            });
+        });
+
+        // Función de navegación nativa SPA
+        function navigate(direction) {
+            let targetIndex = currentSlideIndex + direction;
+            if (targetIndex < 0 || targetIndex >= totalSlides) return;
+            
+            slides[currentSlideIndex].classList.remove('active');
+            currentSlideIndex = targetIndex;
+            slides[currentSlideIndex].classList.add('active');
+
+            // Actualizar etiqueta superior
+            badgePanelText.innerText = slides[currentSlideIndex].getAttribute('data-badge');
+
+            // Visibilidad y lógica de botones
+            if (currentSlideIndex === 0) {
+                spaFooter.style.display = 'none';
+            } else {
+                spaFooter.style.display = 'flex';
+            }
+
+            btnPrev.disabled = (currentSlideIndex === 1);
+            
+            if (currentSlideIndex === totalSlides - 1) {
+                btnNext.style.display = 'none';
+            } else {
+                btnNext.style.display = 'flex';
+                if (currentSlideIndex === totalSlides - 2) {
+                    btnNext.innerHTML = 'Finalizar <i class="fa-solid fa-check"></i>';
+                } else {
+                    btnNext.innerHTML = 'Siguiente <i class="fa-solid fa-arrow-right"></i>';
+                }
+            }
+
+            // Actualizar barra de bolitas inferiores
+            dots.forEach((dot, index) => {
+                if(index === currentSlideIndex) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+
+            // Actualizar barra lateral de navegación sincronizada
+            let activeSidebarIndex = slideToSidebarMap[currentSlideIndex];
+            sidebarItems.forEach((item, index) => {
+                item.classList.remove('active');
+                if (index === activeSidebarIndex) {
+                    item.classList.add('active');
+                }
+                if (index < activeSidebarIndex) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+        }
+
+        // Evento de inicio ocultando barra en pantalla cero
+        if (currentSlideIndex === 0) {
+            spaFooter.style.display = 'none';
+        }
+
+        // Función para inyectar datos en la plantilla invisible e invocar la conversión PDF
+        function generateKabiPDF() {
+            // Recoger campos de texto abiertos escriturables
+            let porqueText = document.getElementById('input-porque').value;
+            let hechosText = document.getElementById('input-hechos').value;
+            let valiosoText = document.getElementById('input-valioso').value;
+            let ideasText = document.getElementById('input-ideas-clave').value;
+
+            // Mapear datos a la maqueta de impresión
+            document.getElementById('pdf-peso').innerText = userData.peso_actual || "No seleccionado";
+            document.getElementById('pdf-emocion').innerText = userData.emocion_presente || "No seleccionado";
+            document.getElementById('pdf-porque').innerText = porqueText || "(Vacío)";
+            document.getElementById('pdf-patron').innerText = userData.patron_comportamiento || "No seleccionado";
+            document.getElementById('pdf-detonante').innerText = userData.detonante_contexto || "No seleccionado";
+            document.getElementById('pdf-hechos').innerText = hechosText || "(Vacío)";
+            document.getElementById('pdf-meta').innerText = userData.meta_conversacion || "No seleccionado";
+            document.getElementById('pdf-valioso').innerText = valiosoText || "(Vacío)";
+            document.getElementById('pdf-enfoque').innerText = userData.resolver_vs_razon || "No seleccionado";
+            document.getElementById('pdf-ideas').innerText = ideasText || "Ninguna idea clave agregada.";
+            document.getElementById('pdf-intencion').innerText = userData.intencion_final || "No seleccionado";
+
+            // Configuración de la librería html2pdf para guardado limpio en A4
+            const element = document.getElementById('pdf-template');
+            element.style.display = 'block'; // Mostrar momentáneamente para la captura
+
+            const opt = {
+                margin:       15,
+                filename:     'KABI_Mi_Guia_Entrenamiento.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = 'none'; // Volver a ocultar tras generación
+            }).catch(err => {
+                console.error(err);
+                element.style.display = 'none';
+            });
+        }
+    </script>
 </body>
 </html>
